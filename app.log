@@ -1,0 +1,15 @@
+2025-09-29 14:20:52,835 - app - INFO - Sending Create Order request to Iute for Order ID: 57c41c60-2aaa-48ef-8f5c-ae969ac673fc
+2025-09-29 14:20:52,836 - app - INFO - Payload: {'myiutePhone': '+355682545298', 'orderId': '57c41c60-2aaa-48ef-8f5c-ae969ac673fc', 'totalAmount': 3500, 'currency': 'ALL', 'merchant': {'posIdentifier': '588a8772-5ce9-4864-b0fa-74c1c200b', 'salesmanIdentifier': 'your-cashier-id'}}
+2025-09-29 14:20:55,286 - app - INFO - Iute Response: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-09-29 14:31:22,421 - app - INFO - Sending Create Order request to Iute for Order ID: 06928c20-10c3-45e0-a092-d6a1b517a77a
+2025-09-29 14:31:22,422 - app - INFO - Payload: {'myiutePhone': '+355682545298', 'orderId': '06928c20-10c3-45e0-a092-d6a1b517a77a', 'totalAmount': 3500, 'currency': 'ALL', 'merchant': {'posIdentifier': '588a8772-5ce9-4864-b0fa-74c1c200b', 'salesmanIdentifier': 'your-cashier-id'}}
+2025-09-29 14:31:23,633 - app - INFO - Iute Response: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-09-29 14:38:27,293 - app - INFO - Sending Create Order request to Iute for Order ID: a45c866f-d920-4344-8ace-e310e49770b6
+2025-09-29 14:38:27,296 - app - INFO - Payload: {'myiutePhone': '+355682545298', 'orderId': 'a45c866f-d920-4344-8ace-e310e49770b6', 'totalAmount': 3500, 'currency': 'ALL', 'merchant': {'posIdentifier': '588a8772-5ce9-4864-b0fa-74c1c200b', 'salesmanIdentifier': 'your-cashier-id'}}
+2025-09-29 14:38:28,420 - app - INFO - Iute Response: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-09-29 14:54:43,331 - app - INFO - Sending Create Order request to Iute for Order ID: b9a26581-d4f1-402d-8f3c-aac754f74584
+2025-09-29 14:54:43,338 - app - INFO - Payload: {'myiutePhone': '+355682545298', 'orderId': 'b9a26581-d4f1-402d-8f3c-aac754f74584', 'totalAmount': 3800, 'currency': 'ALL', 'merchant': {'posIdentifier': '588a8772-5ce9-4864-b0fa-74c1c200b', 'salesmanIdentifier': 'your-cashier-id'}}
+2025-09-29 14:54:44,726 - app - INFO - Iute Response: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-09-29 14:58:17,429 - app - INFO - Sending Create Order request to Iute for Order ID: c613b14c-1014-4705-9b14-6dfb56bd0e10
+2025-09-29 14:58:17,434 - app - INFO - Payload: {'myiutePhone': '+355682545298', 'orderId': 'c613b14c-1014-4705-9b14-6dfb56bd0e10', 'totalAmount': 3500, 'currency': 'ALL', 'merchant': {'posIdentifier': '588a8772-5ce9-4864-b0fa-74c1c200b', 'salesmanIdentifier': 'postman-test-03'}}
+2025-09-29 14:58:18,888 - app - INFO - Iute Response: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
