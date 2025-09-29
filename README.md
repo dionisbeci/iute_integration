@@ -82,6 +82,7 @@ Follow these steps to run the application on your local machine for development 
 Once the server is running locally, you can access the interactive Swagger API documentation in your browser:
 
 *   **URL:** `http://127.0.0.1:5000/apidocs`
+*   **Public URL:** `https://iute-integration-service-341272241059.europe-west8.run.app/apidocs/`
 
 You can use the "Try it out" feature on this page to send test requests directly to your local server.
 
