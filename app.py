@@ -100,46 +100,47 @@ def verify_iute_signature(body, signature_header, timestamp_header):
 def create_iute_payment():
     """
     Create an Iute Payment Request
-    This is the main endpoint for the POS to initiate a payment. It creates a transaction in the Iute system and waits for the customer to approve it in their MyIute app.
+    This is the main endpoint for the POS to initiate a payment.
     ---
     tags:
       - Payments
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - amount
-              - customerPhone
-              - salesmanIdentifier
-              - currency
-            properties:
-              amount:
-                type: number
-                format: float
-                description: The total amount of the transaction.
-                example: 3500
-              customerPhone:
-                type: string
-                description: The customer's phone number in international format (starting with +).
-                example: "+355682545298"
-              salesmanIdentifier:
-                type: string
-                description: The unique identifier for the cashier or salesperson.
-                example: "live-cloud-run-test"
-              currency:
-                type: string
-                description: The 3-letter ISO currency code (e.g., ALL, EUR).
-                example: "ALL"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          id: PaymentData
+          type: object
+          required:
+            - amount
+            - customerPhone
+            - salesmanIdentifier
+            - currency
+          properties:
+            amount:
+              type: number
+              format: float
+              description: The total amount of the transaction.
+              example: 3500
+            customerPhone:
+              type: string
+              description: The customer's phone number in international format (starting with +).
+              example: "+355682545298"
+            salesmanIdentifier:
+              type: string
+              description: The unique identifier for the cashier or salesperson.
+              example: "live-cloud-run-test"
+            currency:
+              type: string
+              description: The 3-letter ISO currency code (e.g., ALL, EUR).
+              example: "ALL"
     responses:
       200:
-        description: Payment initiated successfully. The response from Iute is returned.
+        description: Payment initiated successfully.
       400:
-        description: Bad Request. One or more required fields are missing or invalid in the request body.
+        description: Bad Request. Required fields are missing.
       500:
-        description: Internal Server Error. The service failed to communicate with the Iute API.
+        description: Internal Server Error. Failed to communicate with Iute API.
     """
     data = request.get_json()
     
@@ -203,13 +204,12 @@ def iute_confirmation_webhook():
     ---
     tags:
       - Webhooks
-    requestBody:
-      description: Payload sent by Iute upon successful payment. The signature is verified.
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
     responses:
       200:
         description: Webhook received and acknowledged.
@@ -240,13 +240,12 @@ def iute_cancellation_webhook():
     ---
     tags:
       - Webhooks
-    requestBody:
-      description: Payload sent by Iute upon cancelled/rejected payment. The signature is verified.
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
     responses:
       200:
         description: Webhook received and acknowledged.
