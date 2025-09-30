@@ -21,16 +21,14 @@ POS_ID = os.getenv("POS_ID").strip()
 
 IUTE_PUBLIC_KEY_URL = f"{API_BASE_URL}/public-key/dev-ALB-public-key.pem"
 
-# SETUP FLASK APP
 app = Flask(__name__)
 
-# --- CUSTOM SWAGGER CONFIGURATION ---
 template = {
     "swagger": "2.0",
     "info": {
         "title": "POS to Iute Integration API",
         "description": "API service to act as a bridge between the POS system and the Iute payment gateway.",
-        "version": "1.0.0"
+        "version": "1.4.0"
     },
     "host": "iute-integration-service-341272241059.europe-west8.run.app",
     "basePath": "/",
@@ -56,7 +54,6 @@ swagger_config = {
 
 swagger = Swagger(app, template=template, config=swagger_config)
 
-# --- Production Logging Configuration ---
 if __name__ != '__main__':
     handler = RotatingFileHandler('app.log', maxBytes=100000, backupCount=5)
     handler.setLevel(logging.INFO)
@@ -66,13 +63,11 @@ if __name__ != '__main__':
     app.logger.setLevel(logging.INFO)
 
 
-# HEALTH CHECK ROUTE
 @app.route("/")
 def health_check():
     return "<h1>The Iute Integration Server is running.</h1><p>API documentation is available at /apidocs</p>"
 
 
-# SIGNATURE VERIFICATION (Internal function)
 def verify_iute_signature(body, signature_header, timestamp_header):
     try:
         response = requests.get(IUTE_PUBLIC_KEY_URL)
@@ -95,12 +90,11 @@ def verify_iute_signature(body, signature_header, timestamp_header):
         return False
 
 
-# API ENDPOINT
-@app.route('/create_iute_payment', methods=['POST'])
-def create_iute_payment():
+@app.route('/create_or_update_payment', methods=['POST'])
+def create_or_update_payment():
     """
-    Create an Iute Payment Request
-    This is the main endpoint for the POS to initiate a payment.
+    Create or Update an Iute Payment Request
+    This endpoint creates a new transaction or updates an existing one in the Iute system.
     ---
     tags:
       - Payments
@@ -117,28 +111,97 @@ def create_iute_payment():
             - salesmanIdentifier
             - currency
           properties:
+            orderId:
+              type: string
+              description: "(Optional) Provide an existing orderId to update an order. If omitted, a new order will be created."
             amount:
               type: number
               format: float
-              description: The total amount of the transaction.
-              example: 3500
+              description: "Mandatory. The total amount of the transaction."
             customerPhone:
               type: string
-              description: The customer's phone number in international format (starting with +).
-              example: "+355682545298"
+              description: "Mandatory. The customer's phone number in international format."
             salesmanIdentifier:
               type: string
-              description: The unique identifier for the cashier or salesperson.
-              example: "live-cloud-run-test"
+              description: "Mandatory. The unique identifier for the cashier."
             currency:
               type: string
-              description: The 3-letter ISO currency code (e.g., ALL, EUR).
-              example: "ALL"
+              description: "Mandatory. The 3-letter ISO currency code."
+              enum: ["EUR", "ALL", "MDL", "MKD"]
+            userConfirmationUrl:
+              type: string
+              description: "(Optional) Merchant webhook confirmation URL."
+            userCancelUrl:
+              type: string
+              description: "(Optional) Merchant webhook cancel URL."
+            shippingAmount:
+              type: number
+              format: float
+              description: "(Optional) Order shipping amount. Must be positive."
+            subtotal:
+              type: number
+              format: float
+              description: "(Optional) Order subtotal amount. Must be positive."
+            taxAmount:
+              type: number
+              format: float
+              description: "(Optional) Order tax amount. Must be positive."
+            userPin:
+              type: string
+              description: "(Optional) Customer IDPN / PIN number."
+            birthday:
+              type: string
+              description: "(Optional) Customer birthday in dd.MM.yyyy format."
+              example: "31.12.1990"
+            gender:
+              type: string
+              description: "(Optional) Customer gender."
+              enum: ["MALE", "FEMALE"]
+            shipping:
+              type: object
+              description: "(Optional) Customer shipping information and address object."
+            billing:
+              type: object
+              description: "(Optional) Customer billing information and address object."
+            items:
+              type: array
+              description: "(Optional) Shopping cart items."
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: "Product ID."
+                  displayName:
+                    type: string
+                    description: "Product name."
+                  sku:
+                    type: string
+                    description: "Product SKU."
+                  unitPrice:
+                    type: number
+                    format: float
+                    description: "Single unit price."
+                  qty:
+                    type: integer
+                    description: "Quantity."
+                  itemImageUrl:
+                    type: string
+                    description: "HTTP address of the product image."
+                  itemUrl:
+                    type: string
+                    description: "HTTP address of the product page."
+            discounts:
+              type: object
+              description: "(Optional) Free format key-value model about discounts."
+            metadata:
+              type: object
+              description: "(Optional) Free format key-value model about metadata."
     responses:
       200:
-        description: Payment initiated successfully.
+        description: Payment request created/updated successfully.
       400:
-        description: Bad Request. Required fields are missing.
+        description: Bad Request. Required fields are missing or a field has an invalid value.
       500:
         description: Internal Server Error. Failed to communicate with Iute API.
     """
@@ -150,11 +213,16 @@ def create_iute_payment():
         app.logger.warning(f"Bad request received: {error_msg} - Data: {data}")
         return jsonify({"error": error_msg}), 400
 
+    currency = data['currency']
+    if not isinstance(currency, str) or currency.upper() not in {"EUR", "ALL", "MDL", "MKD"}:
+        error_msg = f"Invalid currency provided: '{currency}'. Supported currencies are: EUR, ALL, MDL, MKD"
+        app.logger.warning(f"Bad request received: {error_msg}")
+        return jsonify({"error": error_msg}), 400
+
+    order_id = data.get('orderId', str(uuid.uuid4()))
     total_amount = data['amount']
     customer_phone = data['customerPhone']
     salesman = data['salesmanIdentifier']
-    currency = data['currency'] 
-    order_id = str(uuid.uuid4())
 
     api_url = f"{API_BASE_URL}/api/v1/physical-api-partners/order"
     
@@ -164,14 +232,27 @@ def create_iute_payment():
         "myiutePhone": customer_phone,
         "orderId": order_id,
         "totalAmount": total_amount,
-        "currency": currency,
+        "currency": currency.upper(),
         "merchant": {
             "posIdentifier": POS_ID,
-            "salesmanIdentifier": salesman
-        }
+            "salesmanIdentifier": salesman,
+            "userConfirmationUrl": data.get("userConfirmationUrl"),
+            "userCancelUrl": data.get("userCancelUrl")
+        },
+        "shippingAmount": data.get("shippingAmount"),
+        "subtotal": data.get("subtotal"),
+        "taxAmount": data.get("taxAmount"),
+        "userPin": data.get("userPin"),
+        "birthday": data.get("birthday"),
+        "gender": data.get("gender"),
+        "shipping": data.get("shipping"),
+        "billing": data.get("billing"),
+        "items": data.get("items"),
+        "discounts": data.get("discounts"),
+        "metadata": data.get("metadata")
     }
 
-    app.logger.info(f"Sending Create Order request to Iute for Order ID: {order_id}")
+    app.logger.info(f"Sending Create/Update Order request to Iute for Order ID: {order_id}")
     app.logger.info(f"Payload: {payload}")
 
     try:
@@ -183,7 +264,7 @@ def create_iute_payment():
 
         return jsonify({
             "status": "success",
-            "message": "Payment initiated. Waiting for customer to approve in MyIute app.",
+            "message": "Payment request sent successfully. Waiting for customer to approve in MyIute app.",
             "orderId": order_id,
             "iute_response": iute_response_data
         }), 200
@@ -194,8 +275,59 @@ def create_iute_payment():
             app.logger.error(f"Response Body: {e.response.text}")
         return jsonify({"error": "Failed to communicate with Iute API"}), 500
 
+@app.route('/payment_status/<string:order_id>', methods=['GET'])
+def check_order_status(order_id):
+    """
+    Check Order Status
+    Retrieves the current status of a specific order from the Iute system.
+    It requires the `orderId` as a path parameter.
+    ---
+    tags:
+      - Payments
+    parameters:
+      - name: order_id
+        in: path
+        type: string
+        required: true
+        description: The unique ID of the order to check.
+    responses:
+      200:
+        description: Status retrieved successfully.
+        schema:
+          type: object
+          properties:
+            orderId:
+              type: string
+            status:
+              type: string
+              example: "PAID"
+      404:
+        description: The requested orderId was not found in the Iute system.
+      500:
+        description: Internal Server Error. Failed to communicate with Iute API.
+    """
+    app.logger.info(f"Checking status for Order ID: {order_id}")
 
-# WEBHOOK ENDPOINTS
+    api_url = f"{API_BASE_URL}/api/v1/physical-api-partners/orders/{order_id}/order-status"
+    headers = { "Authorization": AUTH_TOKEN }
+
+    try:
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+
+        status_data = response.json()
+        app.logger.info(f"Status for Order ID {order_id}: {status_data}")
+        return jsonify(status_data), 200
+
+    except requests.exceptions.RequestException as e:
+        app.logger.error(f"ERROR calling Iute status API for Order ID {order_id}: {e}")
+        if e.response is not None:
+            app.logger.error(f"Response Body: {e.response.text}")
+            if e.response.status_code == 404:
+                return jsonify({"error": f"Order with ID '{order_id}' not found."}), 404
+        return jsonify({"error": "Failed to communicate with Iute API"}), 500
+
+
 @app.route('/iute/confirmation', methods=['POST'])
 def iute_confirmation_webhook():
     """
