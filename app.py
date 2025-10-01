@@ -95,6 +95,12 @@ def create_or_update_payment():
     """
     Create or Update an Iute Payment Request
     This endpoint creates a new transaction or updates an existing one in the Iute system.
+
+    -To create a new order, omit the `orderId` field.
+      Continue to fill all other required fields.
+
+    -To update an existing order, provide the `orderId` of the order to be updated.
+      You can update the `amount`, `customerPhone`, `salesmanIdentifier`, and `currency` fields or other optional fields.
     ---
     tags:
       - Payments
