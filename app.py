@@ -71,15 +71,15 @@ def health_check():
 def verify_iute_signature(body, signature_header, timestamp_header):
     try:
         response = requests.get(IUTE_PUBLIC_KEY_URL)
-        response.raise_for_status() 
+        response.raise_for_status()
         public_key_pem = response.content
-        
+
         public_key = load_pem_public_key(public_key_pem, backend=default_backend())
         signature = base64.b64decode(signature_header)
         message = body + timestamp_header.encode('utf-8')
 
         public_key.verify(signature, message, padding.PKCS1v15(), hashes.SHA256())
-        
+
         app.logger.info("Signature verification successful!")
         return True
     except InvalidSignature:
@@ -112,34 +112,39 @@ def create_or_update_payment():
           id: PaymentData
           type: object
           required:
-            - amount
-            - customerPhone
-            - salesmanIdentifier
+            - totalAmount
+            - myiutePhone
             - currency
+            - merchant
           properties:
+            myiutePhone:
+              type: string
+              description: "Mandatory. The customer's phone number in international format."
             orderId:
               type: string
               description: "(Optional) Provide an existing orderId to update an order. If omitted, a new order will be created."
-            amount:
+            totalAmount:
               type: number
               format: float
               description: "Mandatory. The total amount of the transaction."
-            customerPhone:
-              type: string
-              description: "Mandatory. The customer's phone number in international format."
-            salesmanIdentifier:
-              type: string
-              description: "Mandatory. The unique identifier for the cashier."
             currency:
               type: string
               description: "Mandatory. The 3-letter ISO currency code."
               enum: ["EUR", "ALL", "MDL", "MKD"]
-            userConfirmationUrl:
-              type: string
-              description: "(Optional) Merchant webhook confirmation URL."
-            userCancelUrl:
-              type: string
-              description: "(Optional) Merchant webhook cancel URL."
+            merchant:
+              type: object
+              required:
+                - salesmanIdentifier
+              properties:
+                salesmanIdentifier:
+                  type: string
+                  description: "Mandatory. The unique identifier for the cashier."
+                userConfirmationUrl:
+                  type: string
+                  description: "(Optional) Merchant webhook confirmation URL."
+                userCancelUrl:
+                  type: string
+                  description: "(Optional) Merchant webhook cancel URL."
             shippingAmount:
               type: number
               format: float
@@ -210,12 +215,39 @@ def create_or_update_payment():
         description: Bad Request. Required fields are missing or a field has an invalid value.
       500:
         description: Internal Server Error. Failed to communicate with Iute API.
+      502:
+        description: "Bad Gateway. The request was successfully sent to the Iute API, but the upstream service rejected it with an error (e.g., invalid data for their system)."
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Iute API rejected the request."
+            iute_status_code:
+              type: integer
+              example: 400
+            iute_response:
+              type: object
+              description: "The original JSON or text response body from the Iute API."
+              example: {"field": "myiutePhone", "message": "Invalid phone number format for the specified region."}
     """
     data = request.get_json()
-    
-    required_fields = ['amount', 'customerPhone', 'salesmanIdentifier', 'currency']
-    if not data or not all(field in data for field in required_fields):
-        error_msg = f"Request body must include all required fields: {', '.join(required_fields)}"
+
+    if not data:
+        return jsonify({"error": "Request body must be a valid JSON."}), 400
+
+    missing_fields = []
+    if 'totalAmount' not in data:
+        missing_fields.append('totalAmount')
+    if 'myiutePhone' not in data:
+        missing_fields.append('myiutePhone')
+    if 'currency' not in data:
+        missing_fields.append('currency')
+    if 'merchant' not in data or 'salesmanIdentifier' not in data.get('merchant', {}):
+        missing_fields.append('merchant.salesmanIdentifier')
+
+    if missing_fields:
+        error_msg = f"Request body must include all required fields: {', '.join(missing_fields)}"
         app.logger.warning(f"Bad request received: {error_msg} - Data: {data}")
         return jsonify({"error": error_msg}), 400
 
@@ -225,40 +257,59 @@ def create_or_update_payment():
         app.logger.warning(f"Bad request received: {error_msg}")
         return jsonify({"error": error_msg}), 400
 
-    order_id = data.get('orderId', str(uuid.uuid4()))
-    total_amount = data['amount']
-    customer_phone = data['customerPhone']
-    salesman = data['salesmanIdentifier']
+    gender = data.get('gender')
+    if gender and gender.upper() not in {"MALE", "FEMALE"}:
+        error_msg = f"Invalid gender provided: '{gender}'. Supported values are: MALE, FEMALE"
+        app.logger.warning(f"Bad request received: {error_msg}")
+        return jsonify({"error": error_msg}), 400
+
+    orderId = data.get('orderId', str(uuid.uuid4()))
+    totalAmount = data['totalAmount']
+    myiutePhone = data['myiutePhone']
+    salesmanIdentifier = data['merchant']['salesmanIdentifier']
 
     api_url = f"{API_BASE_URL}/api/v1/physical-api-partners/order"
     
     headers = { "Authorization": AUTH_TOKEN, "Content-Type": "application/json" }
   
+    items_list = []
+    if data.get('items') and isinstance(data['items'], list):
+        for item in data['items']:
+            items_list.append({
+                "id": item.get("id"),
+                "displayName": item.get("displayName"),
+                "sku": item.get("sku"),
+                "unitPrice": item.get("unitPrice"),
+                "qty": item.get("qty"),
+                "itemImageUrl": item.get("itemImageUrl"),
+                "itemUrl": item.get("itemUrl")
+            })
+
     payload = {
-        "myiutePhone": customer_phone,
-        "orderId": order_id,
-        "totalAmount": total_amount,
+        "myiutePhone": myiutePhone,
+        "orderId": orderId,
+        "totalAmount": totalAmount,
         "currency": currency.upper(),
         "merchant": {
             "posIdentifier": POS_ID,
-            "salesmanIdentifier": salesman,
-            "userConfirmationUrl": data.get("userConfirmationUrl"),
-            "userCancelUrl": data.get("userCancelUrl")
+            "salesmanIdentifier": salesmanIdentifier,
+            "userConfirmationUrl": data.get("merchant", {}).get("userConfirmationUrl"),
+            "userCancelUrl": data.get("merchant", {}).get("userCancelUrl")
         },
         "shippingAmount": data.get("shippingAmount"),
         "subtotal": data.get("subtotal"),
         "taxAmount": data.get("taxAmount"),
         "userPin": data.get("userPin"),
         "birthday": data.get("birthday"),
-        "gender": data.get("gender"),
+        "gender": gender.upper() if gender else None,
         "shipping": data.get("shipping"),
         "billing": data.get("billing"),
-        "items": data.get("items"),
+        "items": items_list,
         "discounts": data.get("discounts"),
         "metadata": data.get("metadata")
     }
 
-    app.logger.info(f"Sending Create/Update Order request to Iute for Order ID: {order_id}")
+    app.logger.info(f"Sending Create/Update Order request to Iute for Order ID: {orderId}")
     app.logger.info(f"Payload: {payload}")
 
     try:
@@ -271,15 +322,25 @@ def create_or_update_payment():
         return jsonify({
             "status": "success",
             "message": "Payment request sent successfully. Waiting for customer to approve in MyIute app.",
-            "orderId": order_id,
+            "orderId": orderId,
             "iute_response": iute_response_data
         }), 200
 
     except requests.exceptions.RequestException as e:
         app.logger.error(f"ERROR calling Iute API: {e}")
+        # Check if the error has a response from the server
         if e.response is not None:
-            app.logger.error(f"Response Body: {e.response.text}")
+            app.logger.error(f"Iute API returned status {e.response.status_code}: {e.response.text}")
+
+            return jsonify({
+                "error": "Iute API rejected the request.",
+                "iute_status_code": e.response.status_code,
+                "iute_response": e.response.json() if e.response.headers.get('content-type') == 'application/json' else e.response.text
+            }), 502
+        
+        # If there was no response, network error
         return jsonify({"error": "Failed to communicate with Iute API"}), 500
+    
 
 @app.route('/payment_status/<string:order_id>', methods=['GET'])
 def check_order_status(order_id):
@@ -310,7 +371,22 @@ def check_order_status(order_id):
       404:
         description: The requested orderId was not found in the Iute system.
       500:
-        description: Internal Server Error. Failed to communicate with Iute API.
+        description: Internal Server Error. Failed to communicate with Iute API due to a network issue.
+      502:
+        description: "Bad Gateway. The Iute API returned an unexpected error (e.g., authentication failure, internal error on their side)."
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Upstream Iute API returned an error."
+            iute_status_code:
+              type: integer
+              example: 401
+            iute_response:
+              type: object
+              description: "The original JSON or text response body from the Iute API."
+              example: {"message": "Invalid authentication credentials"}
     """
     app.logger.info(f"Checking status for Order ID: {order_id}")
 
@@ -327,10 +403,28 @@ def check_order_status(order_id):
 
     except requests.exceptions.RequestException as e:
         app.logger.error(f"ERROR calling Iute status API for Order ID {order_id}: {e}")
+        
+        # Check if the error has a response from the upstream server
         if e.response is not None:
-            app.logger.error(f"Response Body: {e.response.text}")
+            # Handle 404 Not Found specifically
             if e.response.status_code == 404:
+                app.logger.warning(f"Order with ID '{order_id}' not found in Iute system.")
                 return jsonify({"error": f"Order with ID '{order_id}' not found."}), 404
+            
+            # Handle all other upstream errors as 502 Bad Gateway
+            app.logger.error(f"Iute API returned status {e.response.status_code}: {e.response.text}")
+            try:
+                iute_json_response = e.response.json()
+            except ValueError:
+                iute_json_response = e.response.text
+
+            return jsonify({
+                "error": "Upstream Iute API returned an error.",
+                "iute_status_code": e.response.status_code,
+                "iute_response": iute_json_response
+            }), 502
+
+        # If there was no response, network error (DNS, timeout, etc.)
         return jsonify({"error": "Failed to communicate with Iute API"}), 500
 
 
