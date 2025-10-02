@@ -13,3 +13,48 @@
 2025-09-29 14:58:17,429 - app - INFO - Sending Create Order request to Iute for Order ID: c613b14c-1014-4705-9b14-6dfb56bd0e10
 2025-09-29 14:58:17,434 - app - INFO - Payload: {'myiutePhone': '+355682545298', 'orderId': 'c613b14c-1014-4705-9b14-6dfb56bd0e10', 'totalAmount': 3500, 'currency': 'ALL', 'merchant': {'posIdentifier': '588a8772-5ce9-4864-b0fa-74c1c200b', 'salesmanIdentifier': 'postman-test-03'}}
 2025-09-29 14:58:18,888 - app - INFO - Iute Response: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-02 11:30:13,391 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:30:14,455 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:30:14,456 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:31:21,662 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:31:22,586 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:31:22,587 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:32:33,790 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:32:34,775 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:32:34,777 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:32:55,670 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:32:56,518 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:32:56,518 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:36:04,629 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:36:05,580 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:36:05,582 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:41:33,343 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:41:34,263 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:41:34,265 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:55:23,697 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:55:24,571 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:55:24,571 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:56:34,245 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:56:35,134 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:56:35,134 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 11:56:44,948 - app - INFO - Checking status for Order ID: 887e883d-d77a-41e0-9382-df975d0bd2ef
+2025-10-02 11:56:45,800 - app - ERROR - ERROR calling Iute status API for Order ID 887e883d-d77a-41e0-9382-df975d0bd2ef: 404 Client Error: Not Found for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/orders/887e883d-d77a-41e0-9382-df975d0bd2ef/order-status
+2025-10-02 11:56:45,801 - app - WARNING - Order with ID '887e883d-d77a-41e0-9382-df975d0bd2ef' not found in Iute system.
+2025-10-02 12:22:54,291 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:22:54,292 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:33:33,284 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:33:33,286 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:45:42,884 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:45:42,884 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:45:45,313 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:45:45,313 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:45:59,077 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:45:59,077 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:46:00,662 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:46:00,664 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:46:02,125 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:46:02,126 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:46:05,238 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:46:05,239 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-02 12:46:10,761 - app - INFO - Received a request on /iute/confirmation...
+2025-10-02 12:46:10,762 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345

@@ -390,8 +390,10 @@ def check_order_status(order_id):
     """
     app.logger.info(f"Checking status for Order ID: {order_id}")
 
-    api_url = f"{API_BASE_URL}/api/v1/physical-api-partners/orders/{order_id}/order-status"
+    api_url = f"{API_BASE_URL}/api/v1/physical-api-partners/orders/{order_id}/status?orderId={order_id}"
     headers = { "Authorization": AUTH_TOKEN }
+
+    app.logger.info(f"Attempting to call Iute API at URL: {api_url}")
 
     try:
         response = requests.get(api_url, headers=headers)
