@@ -58,3 +58,57 @@
 2025-10-02 12:46:05,239 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
 2025-10-02 12:46:10,761 - app - INFO - Received a request on /iute/confirmation...
 2025-10-02 12:46:10,762 - app - INFO - PAYMENT CONFIRMED for Order ID: simulated-order-12345
+2025-10-10 13:04:40,146 - app - INFO - Sending Create/Update Order request to Iute for Order ID: f4bd3af2-3e2e-4170-b58a-8435ca3f2623
+2025-10-10 13:04:40,563 - app - ERROR - ERROR calling Iute API: 400 Client Error: Bad Request for url: https://partner-api-dev.iute.al/api/v1/physical-api-partners/order
+2025-10-10 13:06:37,565 - app - INFO - Sending Create/Update Order request to Iute for Order ID: e09df7bb-2578-44fa-91cf-867633f34e63
+2025-10-10 13:06:39,352 - app - INFO - Iute Response for e09df7bb-2578-44fa-91cf-867633f34e63: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-10 13:06:41,061 - app - INFO - Order e09df7bb-2578-44fa-91cf-867633f34e63 upserted to database with PENDING status.
+2025-10-10 13:06:41,328 - app - INFO - Saved 1 items for order e09df7bb-2578-44fa-91cf-867633f34e63.
+2025-10-10 13:07:47,675 - app - INFO - Sending Create/Update Order request to Iute for Order ID: e09df7bb-2578-44fa-91cf-867633f34e63
+2025-10-10 13:07:48,520 - app - INFO - Iute Response for e09df7bb-2578-44fa-91cf-867633f34e63: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-10 13:07:48,712 - app - INFO - Order e09df7bb-2578-44fa-91cf-867633f34e63 upserted to database with PENDING status.
+2025-10-10 13:07:48,954 - app - INFO - Saved 1 items for order e09df7bb-2578-44fa-91cf-867633f34e63.
+2025-10-10 13:16:31,687 - app - INFO - Received a request on /iute/confirmation...
+2025-10-10 13:16:31,692 - app - INFO - PAYMENT CONFIRMED for Order ID: e09df7bb-2578-44fa-91cf-867633f34e63
+2025-10-10 13:16:32,856 - app - INFO - Database status for Order ID e09df7bb-2578-44fa-91cf-867633f34e63 updated to CONFIRMED.
+2025-10-11 10:43:24,298 - app - INFO - Sending Create/Update Order request to Iute for Order ID: e09df7bb-2578-44fa-91cf-867633f34e63
+2025-10-11 10:43:25,951 - app - INFO - Iute Response for e09df7bb-2578-44fa-91cf-867633f34e63: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-11 10:43:27,370 - app - INFO - Order e09df7bb-2578-44fa-91cf-867633f34e63 upserted to database with PENDING status.
+2025-10-11 10:43:27,615 - app - INFO - Saved 1 items for order e09df7bb-2578-44fa-91cf-867633f34e63.
+2025-10-11 10:45:08,186 - app - INFO - Sending Create/Update Order request to Iute for Order ID: e08df7bb-2578-44fa-91cf-867633f34e63
+2025-10-11 10:45:08,950 - app - INFO - Iute Response for e08df7bb-2578-44fa-91cf-867633f34e63: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-11 10:45:09,433 - app - INFO - Order e08df7bb-2578-44fa-91cf-867633f34e63 upserted to database with PENDING status.
+2025-10-11 10:45:09,693 - app - INFO - Saved 1 items for order e08df7bb-2578-44fa-91cf-867633f34e63.
+2025-10-11 10:48:09,912 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 10:48:09,914 - app - INFO - PAYMENT CONFIRMED for Order ID: e08df7bb-2578-44fa-91cf-867633f34e63
+2025-10-11 10:48:10,968 - app - INFO - Database status for Order ID e08df7bb-2578-44fa-91cf-867633f34e63 updated to CONFIRMED.
+2025-10-11 11:22:00,227 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 11:22:00,228 - app - ERROR - Signature verification failed: Missing headers or body.
+2025-10-11 11:22:36,291 - app - INFO - Sending Create/Update Order request to Iute for Order ID: e09df7bb-2578-44fa-91cf-867633f34e63
+2025-10-11 11:22:38,162 - app - INFO - Iute Response for e09df7bb-2578-44fa-91cf-867633f34e63: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-11 11:22:39,468 - app - INFO - Order e09df7bb-2578-44fa-91cf-867633f34e63 with its items upserted to the database.
+2025-10-11 11:34:54,497 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 11:34:54,499 - app - INFO - PAYMENT CONFIRMED for Order ID: e08df7bb-2578-44fa-91cf-867633f34e63
+2025-10-11 11:34:55,954 - app - INFO - Database status for Order ID e08df7bb-2578-44fa-91cf-867633f34e63 updated to CONFIRMED.
+2025-10-11 11:35:16,779 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 11:35:16,782 - app - INFO - PAYMENT CONFIRMED for Order ID: e09df7bb-2578-44fa-91cf-867633f34e63
+2025-10-11 11:35:17,042 - app - INFO - Database status for Order ID e09df7bb-2578-44fa-91cf-867633f34e63 updated to CONFIRMED.
+2025-10-11 12:10:55,510 - app - INFO - Sending Create/Update Order request to Iute for Order ID: f4a1b2c3-8d7e-4f6a-a5b4-c3d2e1f0a9b8
+2025-10-11 12:10:57,221 - app - INFO - Iute Response for f4a1b2c3-8d7e-4f6a-a5b4-c3d2e1f0a9b8: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-11 12:10:58,693 - app - INFO - Order f4a1b2c3-8d7e-4f6a-a5b4-c3d2e1f0a9b8 with its items upserted to the database.
+2025-10-11 12:11:43,419 - app - INFO - Sending Create/Update Order request to Iute for Order ID: a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4
+2025-10-11 12:11:44,181 - app - INFO - Iute Response for a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-11 12:11:44,876 - app - INFO - Order a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4 with its items upserted to the database.
+2025-10-11 12:13:35,873 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 12:13:35,874 - app - INFO - PAYMENT CONFIRMED for Order ID: a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4
+2025-10-11 12:13:36,231 - app - INFO - Database status for Order ID a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4 updated to CONFIRMED.
+2025-10-11 12:14:16,578 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 12:14:16,579 - app - INFO - PAYMENT CONFIRMED for Order ID: None
+2025-10-11 12:14:16,627 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 12:14:16,628 - app - INFO - PAYMENT CONFIRMED for Order ID: None
+2025-10-11 12:17:34,193 - app - INFO - Received a request on /iute/confirmation...
+2025-10-11 12:17:34,196 - app - INFO - PAYMENT CONFIRMED for Order ID: a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4
+2025-10-11 12:17:34,782 - app - INFO - Database status for Order ID a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4 updated to CONFIRMED.
+2025-10-11 12:31:04,572 - app - INFO - Sending Create/Update Order request to Iute for Order ID: a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4
+2025-10-11 12:31:05,877 - app - INFO - Iute Response for a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-11 12:31:06,291 - app - INFO - Order a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4 with its items upserted to the database.
