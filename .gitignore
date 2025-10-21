@@ -1,5 +1,6 @@
 venv/
 .env
+secrets.yaml
 __pycache__/
 app.log
 *.log

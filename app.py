@@ -15,6 +15,9 @@ from cryptography.exceptions import InvalidSignature
 
 from supabase import create_client, Client
 from datetime import datetime
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+from functools import wraps
 
 load_dotenv()
 
@@ -27,6 +30,36 @@ SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "").strip()
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+
+CLOUD_RUN_SERVICE_URL = "https://iute-integration-service-341272241059.europe-west8.run.app"
+google_request = google_requests.Request()
+
+def token_required(f):
+    """Decorator to ensure a valid Google OIDC ID token is present."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return jsonify({"error": "Authorization header is missing"}), 401
+        
+        parts = auth_header.split()
+        if parts[0].lower() != "bearer" or len(parts) != 2:
+            return jsonify({"error": "Invalid Authorization header format. Expected 'Bearer <token>'"}), 401
+            
+        token = parts[1]
+        
+        try:
+            id_info = id_token.verify_oauth2_token(
+                token, google_request, audience=CLOUD_RUN_SERVICE_URL
+            )
+            
+        except ValueError as e:
+            app.logger.error(f"Token verification failed: {e}")
+            return jsonify({"error": "Invalid or expired token"}), 401
+            
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 app = Flask(__name__)
@@ -118,6 +151,7 @@ def db_update_order_status(order_id: str, status: str, reason: str = None):
 
 
 @app.route('/create_or_update_payment', methods=['POST'])
+@token_required
 def create_or_update_payment():
     """
     Create or Update an Iute Payment Request.
@@ -323,6 +357,7 @@ def create_or_update_payment():
     
 
 @app.route('/payment_status/<string:order_id>', methods=['GET'])
+@token_required
 def check_order_status(order_id):
     """
     Check Order Status.

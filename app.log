@@ -112,3 +112,9 @@
 2025-10-11 12:31:04,572 - app - INFO - Sending Create/Update Order request to Iute for Order ID: a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4
 2025-10-11 12:31:05,877 - app - INFO - Iute Response for a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
 2025-10-11 12:31:06,291 - app - INFO - Order a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4 with its items upserted to the database.
+2025-10-14 16:52:51,302 - app - INFO - Sending Create/Update Order request to Iute for Order ID: a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4
+2025-10-14 16:52:52,894 - app - INFO - Iute Response for a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-14 16:52:54,636 - app - INFO - Order a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4 with its items upserted to the database.
+2025-10-14 17:06:27,636 - app - INFO - Sending Create/Update Order request to Iute for Order ID: a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4
+2025-10-14 17:06:31,435 - app - INFO - Iute Response for a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4: {'status': 'PENDING', 'message': 'Please log in to Myiute to continue checkout', 'myiuteCustomer': True}
+2025-10-14 17:06:33,391 - app - INFO - Order a9b8c7d6-e5f4-a3b2-c1d0-e9f8a7b6c5d4 with its items upserted to the database.
